@@ -5,11 +5,34 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
 /////for Redux///////
-import {createStore} from 'redux';
-import reducer from './store/reducer'
+import {createStore, combineReducers, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux'
-const store=createStore(reducer);
+
+//import reducer from './store/reducer'
+import counterReducer from './store/reducers/counterReducer'
+import storeResultsReducer from './store/reducers/storeResultsReducer'
+
+//const store=createStore(reducer);
+
+const rootReducer=combineReducers({ //combinening 2 reducers
+    counterReducer:counterReducer,
+    storeReducer:storeResultsReducer
+});
+
+const logger=(store)=>{
+    return (next)=>{
+        return (action)=>{
+            console.log('[middleware] Dispatching', action);
+            const result=next(action);
+            console.log('[Middleware] next state', store.getState());
+            return result;
+        }
+    }
+}
+
+const store=createStore(rootReducer, applyMiddleware(logger));
+
 /////for Redux///////
 
-ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+ReactDOM.render(<Provider store={store}> <App /> </Provider>, document.getElementById('root'));
 registerServiceWorker();

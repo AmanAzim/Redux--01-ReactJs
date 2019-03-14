@@ -3,9 +3,10 @@ import {connect} from 'react-redux'
 
 import CounterControl from '../../components/CounterControl/CounterControl';
 import CounterOutput from '../../components/CounterOutput/CounterOutput';
+import * as ActionType from '../../store/actions'
 
 class Counter extends Component {
-    state = {
+   /* state = {
         counter: 0
     }
 
@@ -24,7 +25,7 @@ class Counter extends Component {
                 this.setState( ( prevState ) => { return { counter: prevState.counter - value } } )
                 break;
         }
-    }
+    }*/
 
     render () {
         return (
@@ -35,10 +36,10 @@ class Counter extends Component {
                 <CounterControl label="Add 5" clicked={this.props.onAdd5Counter}  />
                 <CounterControl label="Subtract 5" clicked={this.props.onSubstract5Counter}  />
                 <hr></hr>
-                <button onClick={this.props.onStoreResult}>Store Result</button>
+                <button onClick={()=>this.props.onStoreResult(this.props.ctr)}>Store Result</button>
                 <ul>
                     {this.props.storedResults.map( result=>{
-                        return  <li key={result.id} onClick={this.props.onDeleteResult}>{result.value}</li>
+                        return  <li key={result.id} style={{cursor:'pointer'}} onClick={()=>this.props.onDeleteResult(result.id)}>{result.value}</li>
                     })}
                 </ul>
             </div>
@@ -48,19 +49,21 @@ class Counter extends Component {
 
 const mapStateToProps=(state)=>{ //this state is coming from global Redux state of reducer.js
     return {
-        ctr: state.counter,
-        storedResults:state.results
+        //ctr: state.counter, //these two were for the single global reducer
+        //storedResults:state.results
+        ctr: state.counterReducer.counter,
+        storedResults:state.storeReducer.results
     };
 };
 
 const mapDispatchToProps=(dispatch)=>{ //To manipulate the global state with dispatch. // "dispatch" is coming form global Redux state of reducer.js
         return {
-            onIncrementCounter:()=>dispatch({type:'INCREMENT'}), //"onIncrementCounter" is the name of the function we will use in this component to manipulate the redux state
+            onIncrementCounter:()=>dispatch({type:ActionType.INCREMENT}), //"onIncrementCounter" is the name of the function we will use in this component to manipulate the redux state
             onDecrementCounter:()=>dispatch({type:'DECREMENT'}),
-            onAdd5Counter:()=>dispatch({type:'ADD5', val:5}),
+            onAdd5Counter:()=>dispatch({type:ActionType.ADD5, val:5}),
             onSubstract5Counter:()=>dispatch({type:'SUBSTRACT5', val:5}),
-            onStoreResult:()=>dispatch({type:'STORE_RESULT'}),
-            onDeleteResult:()=>dispatch({type:'DELETE_RESULT'}),
+            onStoreResult:(result)=>dispatch({type:ActionType.STORE_RESULT, result:result}),
+            onDeleteResult:(id)=>dispatch({type:'DELETE_RESULT', resultElemId:id}),
         };
 };
 
