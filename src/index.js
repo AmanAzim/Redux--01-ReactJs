@@ -5,8 +5,9 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
 /////for Redux///////
-import {createStore, combineReducers, applyMiddleware} from 'redux';
-import {Provider} from 'react-redux'
+import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
+import {Provider} from 'react-redux';
+import thunk from 'redux-thunk'; //for asynchronous actions // it is a middleware
 
 //import reducer from './store/reducer'
 import counterReducer from './store/reducers/counterReducer'
@@ -30,7 +31,8 @@ const logger=(store)=>{
     }
 }
 
-const store=createStore(rootReducer, applyMiddleware(logger));
+const composeEnhencers=window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__||compose;
+const store=createStore(rootReducer, composeEnhencers(applyMiddleware(logger, thunk)));
 
 /////for Redux///////
 
