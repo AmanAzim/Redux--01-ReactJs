@@ -1,4 +1,5 @@
-import * as ActionType from '../actions/actions'
+import * as ActionType from '../actions/actionTypes'
+import {updateObject} from '../utility'
 
 const initialState={
     counter:0,
@@ -17,15 +18,9 @@ const CounterReducer=(state=initialState, action)=>{
                 counter:state.counter-1
             }
         case ActionType.ADD5:
-            return{
-                ...state,
-                counter:state.counter+action.val
-            }
+            return updateObject(state,{counter:state.counter+action.val});
         case 'SUBSTRACT5':
-            return{
-                ...state,
-                counter:state.counter-action.val
-            }
+            return updateObject(state,{counter:state.counter-action.val}); //example of using the helper function to update the state created in 'utility.js'
 
     }
 
